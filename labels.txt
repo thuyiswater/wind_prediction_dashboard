@@ -1,0 +1,181 @@
+🌤 1️⃣ Raw Weather Features (From API)
+Temp (C)
+
+Air temperature at 2 meters above ground
+
+Unit: Celsius
+
+Affects air density → impacts turbine efficiency
+
+Dew Point Temp (C)
+
+Temperature at which air becomes saturated
+
+Indicates moisture level in air
+
+Used for humidity relationship modeling
+
+Rel Hum (%)
+
+Relative humidity
+
+% of moisture in air compared to maximum possible
+
+Affects turbine performance slightly
+
+Precip. Amount (mm)
+
+Hourly precipitation (rain/snow)
+
+Unit: millimeters
+
+Heavy rain → reduced turbine efficiency
+
+Wind Spd (km/h)
+
+Wind speed at 10 meters height
+
+Unit: km/h
+
+🔥 MOST IMPORTANT for wind power
+
+Power output increases roughly with wind speed³
+
+Visibility (km)
+
+Distance you can clearly see
+
+Unit: kilometers
+
+Proxy for fog, heavy rain, storms
+
+Stn Press (kPa)
+
+Surface atmospheric pressure
+
+Unit: kilopascals
+
+Converted from hPa → kPa
+
+Affects air density
+
+⏰ 2️⃣ Time Cyclical Features
+
+These help the model understand time patterns.
+
+hour_sin
+
+Sine encoding of hour (0–23)
+
+Represents daily cycle smoothly
+
+hour_cos
+
+Cosine encoding of hour
+
+Works with hour_sin to prevent jump between 23 → 0
+
+Why?
+Because 23:00 and 00:00 are close in real life but far numerically.
+
+month_sin
+
+Sine encoding of month (1–12)
+
+Represents seasonal cycle
+
+month_cos
+
+Cosine encoding of month
+
+Why?
+January and December are close seasonally.
+
+🌬 3️⃣ Wind Engineered Features
+wind_dir_sin
+
+Sine encoding of wind direction (degrees → radians)
+
+wind_dir_cos
+
+Cosine encoding of wind direction
+
+Why?
+Wind direction 0° and 360° are the same — cyclical encoding fixes this.
+
+wind_power_potential
+
+Wind speed³
+
+Formula: (Wind Spd (km/h))^3
+
+Based on wind energy equation:
+
+𝑃
+𝑜
+𝑤
+𝑒
+𝑟
+∝
+𝑊
+𝑖
+𝑛
+𝑑
+𝑆
+𝑝
+𝑒
+𝑒
+𝑑
+3
+Power∝WindSpeed
+3
+
+🔥 This is extremely important for wind generation prediction.
+
+⚡ 4️⃣ Plant / Model-Specific Features
+
+These do NOT come from API.
+
+output_mw_lag_1h
+
+Power output from previous hour
+
+Helps model understand momentum / inertia
+
+VERY important for time series models
+
+available_capacity_mw
+
+Maximum generation capacity of turbine
+
+Example: 120 MW
+
+Limits prediction range
+
+generator_name_PORTALMA-T1
+
+One-hot encoding for turbine T1
+
+1 = this turbine
+
+0 = not this turbine
+
+generator_name_PORTALMA-T3
+
+One-hot encoding for turbine T3
+
+weather_quality_good
+
+1 if weather favorable for generation
+
+Example rule:
+
+Wind > 15 km/h
+
+Low precipitation
+
+weather_quality_bad
+
+Opposite of good
+
+1 if poor generation conditions
